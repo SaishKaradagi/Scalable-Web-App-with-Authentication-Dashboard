@@ -1,7 +1,12 @@
+import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Toaster } from "sonner";
+import axios from "axios";
+import { API_ENDPOINTS } from "@/config/api";
+
+// Pages
 import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import Register from "@/pages/Register";
@@ -54,12 +59,31 @@ function AppRoutes() {
 }
 
 function App() {
+  // --- WAKE UP SERVICE ---
+  useEffect(() => {
+    const wakeUpBackend = async () => {
+      try {
+        // We use a fire-and-forget approach. We don't need the response data.
+        // This forces the Render container to spin up.
+        await axios.get(API_ENDPOINTS.HEALTH);
+        console.log("✅ System: Backend is awake and ready.");
+      } catch (error) {
+        // Even if it fails (e.g. network error), the attempt itself
+        // is usually enough to trigger the wakeup on Render's side.
+        console.log("⚠️ System: Waking up backend service...");
+      }
+    };
+
+    wakeUpBackend();
+  }, []);
+  // -----------------------
+
   return (
     <AuthProvider>
       <BrowserRouter>
         <AppRoutes />
       </BrowserRouter>
-      <Toaster position="top-right" richColors />
+      <Toaster position="top-right" richColors theme="dark" />
     </AuthProvider>
   );
 }
