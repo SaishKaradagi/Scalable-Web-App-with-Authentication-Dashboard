@@ -14,7 +14,8 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://localhost:5001",
+        target:
+          "https://scalable-web-app-with-authentication-1kum.onrender.com/",
         changeOrigin: true,
       },
     },

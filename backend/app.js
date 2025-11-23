@@ -61,11 +61,7 @@ if (process.env.NODE_ENV === "development") {
 
 // Health check route
 app.get("/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is running",
-    timestamp: new Date().toISOString(),
-  });
+  res.status(200).json({ status: "ok", uptime: process.uptime() });
 });
 
 // API routes
