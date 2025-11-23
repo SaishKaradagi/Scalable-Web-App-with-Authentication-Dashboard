@@ -25,9 +25,9 @@ export default function AnimatedBeams() {
     // Configuration
     const intensity = "strong"; // simplified for React
 
-    function random(min: number, max: number) {
-      return Math.random() * (max - min) + min;
-    }
+    // function random(min: number, max: number) {
+    //   return Math.random() * (max - min) + min;
+    // }
 
     function createBeam(w: number, h: number) {
       const angle = -35 + Math.random() * 10;

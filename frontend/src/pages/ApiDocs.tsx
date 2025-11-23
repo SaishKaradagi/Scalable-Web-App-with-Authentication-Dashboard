@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +9,6 @@ import {
   Shield,
   Database,
   Terminal,
-  Hash,
-  ChevronRight,
 } from "lucide-react";
 import AnimatedBeams from "@/components/AnimatedBeams";
 import { cn } from "@/lib/utils";
@@ -40,7 +37,6 @@ const MethodBadge = ({ method }: { method: string }) => {
 
 const CodeBlock = ({
   code,
-  language = "json",
   title,
 }: {
   code: string;
@@ -111,7 +107,7 @@ export default function ApiDocs() {
   // Simple spy scroll logic
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["introduction", "auth", "profile", "tasks", "errors"];
+      //const sections = ["introduction", "auth", "profile", "tasks", "errors"];
       // Logic to determine active section based on scroll position would go here
     };
     window.addEventListener("scroll", handleScroll);

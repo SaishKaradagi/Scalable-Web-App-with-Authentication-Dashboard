@@ -1,13 +1,11 @@
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import {
-  Calendar,
   Clock,
   Check,
   MoreHorizontal,
   Pencil,
   Trash2,
-  Tag,
   AlertTriangle,
   ArrowRight,
 } from "lucide-react";
@@ -50,7 +48,7 @@ export default function TaskCard({
   onDelete,
   onStatusChange,
 }: TaskCardProps) {
-  const PriorityIcon = priorityConfig[task.priority].icon;
+  //const PriorityIcon = priorityConfig[task.priority].icon;
 
   // Handle direct status toggle
   const handleStatusClick = (e: React.MouseEvent) => {

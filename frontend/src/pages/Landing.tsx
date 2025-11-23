@@ -1,23 +1,10 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import AnimatedBeams from "../components/AnimatedBeams";
 import Marquee from "../components/Marquee";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowRight,
-  CheckCircle2,
-  Zap,
-  Shield,
-  LayoutGrid,
-  Star,
-  Command,
-  Sparkles,
-  Filter,
-  Github,
-  Twitter,
-  Linkedin,
-} from "lucide-react";
+import { ArrowRight, CheckCircle2, Shield, Filter } from "lucide-react";
 
 // --- COMPONENTS ---
 
