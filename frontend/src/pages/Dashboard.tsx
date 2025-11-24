@@ -30,12 +30,12 @@ import {
   LogOut,
   User,
   Filter,
-  LayoutGrid,
   CheckCircle2,
   Clock,
   Zap,
   Settings,
   ChevronDown,
+  LayoutGrid,
   Sparkles,
   BarChart3,
   CalendarDays,
@@ -43,6 +43,7 @@ import {
 import { getInitials } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import AnimatedBeams from "@/components/AnimatedBeams";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // --- Internal Navbar Component ---
 const DashboardNavbar = ({ user, logout, navigate }: any) => {
@@ -50,9 +51,9 @@ const DashboardNavbar = ({ user, logout, navigate }: any) => {
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-6 px-4 pointer-events-none"
+      className="fixed top-0 inset-x-0 z-50 flex justify-center pt-4 md:pt-6 px-4 pointer-events-none"
     >
-      <div className="pointer-events-auto backdrop-blur-2xl bg-black/60 border border-white/10 rounded-full pl-6 pr-2 py-2 flex items-center justify-between gap-8 shadow-2xl w-full max-w-5xl">
+      <div className="pointer-events-auto backdrop-blur-2xl bg-black/80 md:bg-black/60 border border-white/10 rounded-full pl-4 md:pl-6 pr-2 py-2 flex items-center justify-between gap-4 md:gap-8 shadow-2xl w-full max-w-5xl">
         {/* Logo Section */}
         <div
           className="flex items-center gap-3 cursor-pointer group"
@@ -72,14 +73,14 @@ const DashboardNavbar = ({ user, logout, navigate }: any) => {
           <Button
             variant="ghost"
             size="icon"
-            className="rounded-full text-neutral-400 hover:text-white hover:bg-white/10"
+            className="rounded-full text-neutral-400 hover:text-white hover:bg-white/10 hidden sm:flex"
           >
             <Settings className="w-4 h-4" />
           </Button>
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full hover:bg-white/10 transition-colors border border-transparent hover:border-white/5 outline-none">
+              <button className="flex items-center gap-2 pl-2 pr-2 md:pr-4 py-1.5 rounded-full hover:bg-white/10 transition-colors border border-transparent hover:border-white/5 outline-none">
                 <Avatar className="h-7 w-7 border border-white/10">
                   <AvatarImage src={user?.avatar} />
                   <AvatarFallback className="bg-neutral-800 text-[10px] text-white">
@@ -133,6 +134,8 @@ const DashboardNavbar = ({ user, logout, navigate }: any) => {
 export default function Dashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [priorityFilter, setPriorityFilter] = useState<string>("all");
@@ -144,12 +147,8 @@ export default function Dashboard() {
   const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
-    // Initial call
     updateTimeAndGreeting();
-
-    // Update every second to show live clock
     const timer = setInterval(updateTimeAndGreeting, 1000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -157,8 +156,6 @@ export default function Dashboard() {
     const now = new Date();
     setCurrentTime(now);
     const hour = now.getHours();
-
-    // Adjusted logic: Evening starts at 5 PM (17:00)
     if (hour >= 5 && hour < 12) setGreeting("Good morning");
     else if (hour >= 12 && hour < 17) setGreeting("Good afternoon");
     else setGreeting("Good evening");
@@ -243,33 +240,33 @@ export default function Dashboard() {
         navigate={navigate}
       />
 
-      <main className="container max-w-5xl mx-auto px-4 pt-32 relative z-10">
+      <main className="container max-w-5xl mx-auto px-4 pt-24 md:pt-32 relative z-10">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 md:mb-10">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-4xl font-bold tracking-tight mb-2">
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
               {greeting},{" "}
               <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
                 {user?.name?.split(" ")[0]}
               </span>
             </h1>
-            <div className="text-neutral-500 flex items-center gap-3 text-sm">
+            <div className="text-neutral-500 flex flex-wrap items-center gap-3 text-sm">
               <span className="flex items-center gap-1.5">
                 <BarChart3 className="w-4 h-4" />
-                Workspace Overview
+                Overview
               </span>
-              <span className="w-1 h-1 rounded-full bg-neutral-700" />
-              <span className="flex items-center gap-1.5 text-neutral-400 font-mono">
+              <span className="hidden md:inline w-1 h-1 rounded-full bg-neutral-700" />
+              <span className="flex items-center gap-1.5 text-neutral-400 font-mono text-xs md:text-sm">
                 <CalendarDays className="w-3.5 h-3.5" />
                 {currentTime.toLocaleDateString([], {
                   weekday: "short",
                   month: "short",
                   day: "numeric",
                 })}
-                <span className="text-neutral-600">|</span>
+                <span className="text-neutral-600 mx-1">|</span>
                 <Clock className="w-3.5 h-3.5" />
                 {currentTime.toLocaleTimeString([], {
                   hour: "2-digit",
@@ -283,187 +280,161 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="flex items-center gap-2 text-sm text-neutral-400 bg-neutral-900/50 px-4 py-2 rounded-full border border-white/5 backdrop-blur-sm"
+            className="self-start md:self-auto flex items-center gap-2 text-xs md:text-sm text-neutral-400 bg-neutral-900/50 px-4 py-2 rounded-full border border-white/5 backdrop-blur-sm"
           >
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            {totalTasks} Total Tasks
+            {totalTasks} Active Tasks
           </motion.div>
         </div>
 
-        {/* HUD Stats Grid */}
+        {/* HUD Stats Grid - Scrollable on mobile? No, stacked is better */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid gap-4 md:grid-cols-3 mb-10"
+          className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-3 mb-8"
         >
-          {/* Card 1: To Do */}
-          <div className="group relative overflow-hidden bg-neutral-900/40 backdrop-blur-md border border-white/5 rounded-3xl p-6 hover:bg-neutral-900/60 hover:border-white/10 transition-all duration-300">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
-              <Clock className="w-20 h-20 text-yellow-500" />
-            </div>
-            <div className="flex flex-col relative z-10">
-              <span className="text-xs font-mono text-yellow-500/80 uppercase tracking-widest mb-1 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />{" "}
-                Pending
-              </span>
-              <span className="text-4xl font-bold text-white mb-4 tracking-tight">
-                {pendingCount}
-              </span>
-
-              {/* Dynamic Progress Bar */}
-              <div className="flex items-center gap-2 text-xs text-neutral-500 mb-1.5">
-                <span>Load</span>
-                <span className="ml-auto">
-                  {calculateProgress(pendingCount)}%
+          {/* Stats Cards */}
+          {[
+            {
+              label: "Pending",
+              count: pendingCount,
+              icon: Clock,
+              color: "text-yellow-500",
+              bg: "from-yellow-600 to-yellow-400",
+              sub: "Load",
+            },
+            {
+              label: "In Focus",
+              count: inProgressCount,
+              icon: Zap,
+              color: "text-blue-500",
+              bg: "from-blue-600 to-blue-400",
+              sub: "Activity",
+            },
+            {
+              label: "Done",
+              count: completedCount,
+              icon: CheckCircle2,
+              color: "text-green-500",
+              bg: "from-green-600 to-green-400",
+              sub: "Completion",
+            },
+          ].map((stat, i) => (
+            <div
+              key={i}
+              className="group relative overflow-hidden bg-neutral-900/40 backdrop-blur-md border border-white/5 rounded-2xl md:rounded-3xl p-5 md:p-6 hover:bg-neutral-900/60 hover:border-white/10 transition-all duration-300"
+            >
+              <div
+                className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500 ${stat.color}`}
+              >
+                <stat.icon className="w-16 h-16 md:w-20 md:h-20" />
+              </div>
+              <div className="flex flex-col relative z-10">
+                <span
+                  className={`text-[10px] md:text-xs font-mono uppercase tracking-widest mb-1 flex items-center gap-2 ${stat.color} opacity-80`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full bg-current`} />{" "}
+                  {stat.label}
                 </span>
-              </div>
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${calculateProgress(pendingCount)}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-yellow-600 to-yellow-400 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 2: In Progress */}
-          <div className="group relative overflow-hidden bg-neutral-900/40 backdrop-blur-md border border-white/5 rounded-3xl p-6 hover:bg-neutral-900/60 hover:border-white/10 transition-all duration-300">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
-              <Zap className="w-20 h-20 text-blue-500" />
-            </div>
-            <div className="flex flex-col relative z-10">
-              <span className="text-xs font-mono text-blue-500/80 uppercase tracking-widest mb-1 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />{" "}
-                In Focus
-              </span>
-              <span className="text-4xl font-bold text-white mb-4 tracking-tight">
-                {inProgressCount}
-              </span>
-
-              {/* Dynamic Progress Bar */}
-              <div className="flex items-center gap-2 text-xs text-neutral-500 mb-1.5">
-                <span>Activity</span>
-                <span className="ml-auto">
-                  {calculateProgress(inProgressCount)}%
+                <span className="text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4 tracking-tight">
+                  {stat.count}
                 </span>
-              </div>
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${calculateProgress(inProgressCount)}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-blue-600 to-blue-400 rounded-full"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Card 3: Completed */}
-          <div className="group relative overflow-hidden bg-neutral-900/40 backdrop-blur-md border border-white/5 rounded-3xl p-6 hover:bg-neutral-900/60 hover:border-white/10 transition-all duration-300">
-            <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity transform group-hover:scale-110 duration-500">
-              <CheckCircle2 className="w-20 h-20 text-green-500" />
-            </div>
-            <div className="flex flex-col relative z-10">
-              <span className="text-xs font-mono text-green-500/80 uppercase tracking-widest mb-1 flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Done
-              </span>
-              <span className="text-4xl font-bold text-white mb-4 tracking-tight">
-                {completedCount}
-              </span>
-
-              {/* Dynamic Progress Bar */}
-              <div className="flex items-center gap-2 text-xs text-neutral-500 mb-1.5">
-                <span>Completion</span>
-                <span className="ml-auto">
-                  {calculateProgress(completedCount)}%
-                </span>
-              </div>
-              <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${calculateProgress(completedCount)}%` }}
-                  transition={{ duration: 1, ease: "easeOut" }}
-                  className="h-full bg-gradient-to-r from-green-600 to-green-400 rounded-full"
-                />
+                <div className="flex items-center gap-2 text-[10px] md:text-xs text-neutral-500 mb-1.5">
+                  <span>{stat.sub}</span>
+                  <span className="ml-auto">
+                    {calculateProgress(stat.count)}%
+                  </span>
+                </div>
+                <div className="h-1 md:h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${calculateProgress(stat.count)}%` }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className={`h-full bg-gradient-to-r ${stat.bg} rounded-full`}
+                  />
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </motion.div>
 
-        {/* Control Bar (Search & Filter) */}
+        {/* Responsive Control Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="sticky top-24 z-30 mb-8 p-2 rounded-2xl bg-neutral-900/40 backdrop-blur-xl border border-white/5 shadow-2xl flex flex-col md:flex-row gap-2"
+          className="sticky top-20 md:top-24 z-30 mb-6 md:mb-8 p-2 rounded-2xl bg-neutral-900/60 backdrop-blur-xl border border-white/10 shadow-2xl"
         >
-          <div className="relative flex-1 group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 group-focus-within:text-blue-400 transition-colors" />
-            <Input
-              placeholder="Filter tasks by title..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-10 bg-transparent border-transparent text-white placeholder:text-neutral-500 focus:bg-neutral-800 focus:border-white/10 rounded-xl transition-all"
-            />
-          </div>
+          <div className="flex flex-col md:flex-row gap-2">
+            {/* Search - Full width on mobile */}
+            <div className="relative flex-1 group">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-500 group-focus-within:text-blue-400 transition-colors" />
+              <Input
+                placeholder="Filter tasks..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-10 h-10 bg-black/20 border-white/5 text-white placeholder:text-neutral-500 focus:bg-black/40 focus:border-white/10 rounded-xl transition-all text-sm"
+              />
+            </div>
 
-          <div className="flex gap-2">
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[130px] h-10 bg-transparent border-transparent text-neutral-400 hover:text-white hover:bg-white/5 focus:bg-neutral-800 rounded-xl transition-all">
-                <div className="flex items-center gap-2">
-                  <Filter className="h-3.5 w-3.5" />
-                  <SelectValue placeholder="Status" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-white/10 text-white">
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="in-progress">In Progress</SelectItem>
-                <SelectItem value="completed">Completed</SelectItem>
-              </SelectContent>
-            </Select>
+            {/* Filters Row - Split 50/50 on mobile */}
+            <div className="flex gap-2">
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="flex-1 md:w-[130px] h-10 bg-black/20 border-white/5 text-neutral-400 hover:text-white focus:bg-black/40 rounded-xl transition-all text-xs md:text-sm">
+                  <div className="flex items-center gap-2 truncate">
+                    <Filter className="h-3.5 w-3.5 flex-shrink-0" />
+                    <SelectValue placeholder="Status" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-neutral-900 border-white/10 text-white">
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="in-progress">In Progress</SelectItem>
+                  <SelectItem value="completed">Completed</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-              <SelectTrigger className="w-[130px] h-10 bg-transparent border-transparent text-neutral-400 hover:text-white hover:bg-white/5 focus:bg-neutral-800 rounded-xl transition-all">
-                <div className="flex items-center gap-2">
-                  <LayoutGrid className="h-3.5 w-3.5" />
-                  <SelectValue placeholder="Priority" />
-                </div>
-              </SelectTrigger>
-              <SelectContent className="bg-neutral-900 border-white/10 text-white">
-                <SelectItem value="all">All Priority</SelectItem>
-                <SelectItem value="low">Low</SelectItem>
-                <SelectItem value="medium">Medium</SelectItem>
-                <SelectItem value="high">High</SelectItem>
-              </SelectContent>
-            </Select>
+              <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                <SelectTrigger className="flex-1 md:w-[130px] h-10 bg-black/20 border-white/5 text-neutral-400 hover:text-white focus:bg-black/40 rounded-xl transition-all text-xs md:text-sm">
+                  <div className="flex items-center gap-2 truncate">
+                    <LayoutGrid className="h-3.5 w-3.5 flex-shrink-0" />
+                    <SelectValue placeholder="Priority" />
+                  </div>
+                </SelectTrigger>
+                <SelectContent className="bg-neutral-900 border-white/10 text-white">
+                  <SelectItem value="all">All Priority</SelectItem>
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                </SelectContent>
+              </Select>
 
-            <div className="w-px h-6 bg-white/10 self-center mx-1 hidden md:block" />
-
-            <Button
-              onClick={() => setDialogOpen(true)}
-              className="bg-white text-black hover:bg-neutral-200 font-bold h-10 px-6 rounded-xl shadow-lg shadow-white/5 transition-all w-full md:w-auto"
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              New
-            </Button>
+              {/* Desktop "New Task" Button - Hidden on Mobile */}
+              <div className="hidden md:block pl-2 border-l border-white/10 ml-1">
+                <Button
+                  onClick={() => setDialogOpen(true)}
+                  className="bg-white text-black hover:bg-neutral-200 font-bold h-10 px-6 rounded-xl shadow-lg shadow-white/5 transition-all"
+                >
+                  <Plus className="mr-2 h-4 w-4" />
+                  New
+                </Button>
+              </div>
+            </div>
           </div>
         </motion.div>
 
         {/* Task Grid */}
-        <div className="min-h-[400px]">
+        <div className="min-h-[400px] pb-24">
           {isLoading ? (
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
               {[...Array(6)].map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="h-48 w-full bg-neutral-900/50 rounded-2xl"
+                  className="h-40 w-full bg-neutral-900/50 rounded-2xl"
                 />
               ))}
             </div>
@@ -471,15 +442,15 @@ export default function Dashboard() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="flex flex-col items-center justify-center py-24 border border-dashed border-white/10 rounded-3xl bg-neutral-900/20"
+              className="flex flex-col items-center justify-center py-12 md:py-24 border border-dashed border-white/10 rounded-3xl bg-neutral-900/20"
             >
-              <div className="w-16 h-16 bg-neutral-800/50 rounded-full flex items-center justify-center mb-4 border border-white/5">
-                <Sparkles className="w-8 h-8 text-neutral-500" />
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-neutral-800/50 rounded-full flex items-center justify-center mb-4 border border-white/5">
+                <Sparkles className="w-6 h-6 md:w-8 md:h-8 text-neutral-500" />
               </div>
-              <h3 className="text-xl font-semibold mb-2 text-white">
+              <h3 className="text-lg md:text-xl font-semibold mb-2 text-white">
                 No tasks found
               </h3>
-              <p className="text-neutral-500 mb-6 max-w-sm text-center">
+              <p className="text-neutral-500 mb-6 max-w-[250px] md:max-w-sm text-center text-sm md:text-base">
                 Your workspace is clear. Add a new task to get started.
               </p>
               <Button
@@ -494,7 +465,7 @@ export default function Dashboard() {
           ) : (
             <motion.div
               layout
-              className="grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+              className="grid gap-3 md:gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
             >
               <AnimatePresence>
                 {tasks.map((task) => (
@@ -514,6 +485,22 @@ export default function Dashboard() {
           )}
         </div>
       </main>
+
+      {/* Mobile Floating Action Button (FAB) */}
+      <AnimatePresence>
+        {isMobile && (
+          <motion.button
+            initial={{ scale: 0, rotate: 180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0, rotate: 180 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setDialogOpen(true)}
+            className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-blue-600 text-white rounded-full shadow-2xl shadow-blue-600/30 flex items-center justify-center border border-white/20"
+          >
+            <Plus className="w-7 h-7" />
+          </motion.button>
+        )}
+      </AnimatePresence>
 
       {/* Task Dialog Component */}
       <TaskDialog

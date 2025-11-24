@@ -7,7 +7,7 @@ const IS_DEV = import.meta.env.MODE === "development";
 
 // IMPORTANT: Ensure this port matches your backend (5000 or 5001)
 export const API_BASE_URL = IS_DEV
-  ? "http://localhost:5000/api"
+  ? "http://localhost:5001/api"
   : ENV_API_URL ||
     "https://scalable-web-app-with-authentication-1kum.onrender.com/api";
 
